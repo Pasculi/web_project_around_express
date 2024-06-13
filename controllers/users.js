@@ -35,3 +35,40 @@ exports.createUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, about } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { name, about },
+      { new: true, runValidators: true }
+    ).orFail(() => {
+      const error = new Error("User not found");
+      console.log(req.user._id)
+      error.statusCode = 404;
+      throw error;
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Actualizar el avatar del usuario
+exports.updateAvatar = async (req, res) => {
+  try {
+    const { avatar } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatar },
+      { new: true, runValidators: true }
+    ).orFail(() => {
+      const error = new Error("User not founds");
+      error.statusCode = 404;
+      throw error;
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
